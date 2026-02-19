@@ -1,26 +1,201 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  /* COLORS
+    Usage: bg-primary, text-muted, border-accent
+  */
+  --color-primary: #d97706; /* Amber 600 */
+  --color-primary-hover: #b45309; /* Amber 700 */
+  --color-primary-light: #fef3c7; /* Amber 100 */
+  --color-primary-glow: rgba(217, 119, 6, 0.35);
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-bg: #fffbeb; /* Amber 50 */
+  --color-surface: #fef3c7; /* Amber 100 */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --color-text-main: #451a03; /* Amber 950 */
+  --color-text-muted: #92400e; /* Amber 700 */
+
+  --color-accent: #059669; /* Emerald 600 */
+  --color-accent-bg: rgba(5, 150, 105, 0.1);
+
+  /* FONTS
+    Usage: font-display, font-body
+  */
+  --font-display: "Newsreader", serif;
+  --font-body: "Satoshi", "Inter", system-ui, sans-serif;
+
+  /* RADII
+    Usage: rounded-card, rounded-pill
+  */
+  --radius-card: 24px;
+  --radius-pill: 9999px;
+
+  /* SHADOWS
+    Usage: shadow-glow, shadow-btn
+  */
+  --shadow-glow: 0 10px 40px -10px var(--color-primary-glow);
+  --shadow-btn: 0 20px 40px -10px var(--color-primary-glow);
+  --shadow-btn-hover: 0 25px 50px -12px var(--color-primary-glow);
+
+  /* ANIMATIONS
+    Usage: animate-marquee, animate-fade-in-up
+  */
+  --animate-marquee: marquee 40s linear infinite;
+  --animate-fade-in-up: fadeInUp 0.55s ease-out forwards;
+  --animate-fade-in: fadeIn 0.4s ease-out forwards;
+  --animate-scale-in: scaleIn 0.35s ease-out forwards;
+  --animate-slide-in-right: slideInRight 0.35s ease-out forwards;
+  --animate-shimmer: shimmer 2s linear infinite;
+
+  /* KEYFRAMES
+    These are linked to the animations above
+  */
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  @keyframes shimmer {
+    from {
+      background-position: 0 0;
+    }
+    to {
+      background-position: -200% 0;
+    }
   }
 }
 
+/* ─────────────────────────────────────────────
+   BASE STYLES
+   ───────────────────────────────────────────── */
+/* Note: We can use @apply or standard CSS here.
+   Since we defined variables in @theme, we can use
+   theme() function or just standard usage if preferred.
+*/
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text-main);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+::selection {
+  background-color: var(--color-primary);
+  color: #fff;
+}
+
+/* ─────────────────────────────────────────────
+   CUSTOM UTILITIES
+   ───────────────────────────────────────────── */
+
+/* Grain Texture */
+@utility bg-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+}
+
+/* Hide Scrollbar Utility */
+@utility no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   CUSTOM ELEMENTS (Range Slider & Scrollbar)
+   ───────────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 5px;
+  border: 2px solid var(--color-bg);
+}
+
+/* Range Slider */
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  background: transparent;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 7px;
+  border-radius: var(--radius-pill);
+  background: var(--color-primary-light);
+  cursor: pointer;
+}
+input[type="range"]::-moz-range-track {
+  height: 7px;
+  border-radius: var(--radius-pill);
+  background: var(--color-primary-light);
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  cursor: pointer;
+  margin-top: -12px;
+  box-shadow:
+    0 0 0 4px var(--color-primary-light),
+    0 0 12px var(--color-primary-glow);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.12);
 }
